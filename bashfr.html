@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
+    <head>
+        <title>BashFR</title>
+        <meta name="author" content="Mickael BLATIERE" />
+        <link rel="icon" href="http://danstonchat.com/favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+        <script type="text/javascript" src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+        <style>
+            #BashFR .quote {
+                border: 10px solid #A0c187;
+                background-color: #fff;
+                color: #555753;
+                font-weight: bold;
+                padding: 10px;
+            }
+            #BashFR .quote:hover {
+                cursor: pointer;
+            }
+            #BashFR .link {
+                display: block;
+                text-align: right;
+                padding: 5px 10px;
+                background-color: #333;
+                height: 15px;
+            }
+            #BashFR .link a {
+                color: #fff;
+                text-decoration: none;
+                border: none;
+            }
+        </style>
+        <script type="text/javascript">
+
+            var BashFR = { };
+
+            BashFR.init = function(data) {
+                BashFR.quotes = data.replace(/&/g, "&amp;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/'/g, "&#146;")
+                    .split("\n%\n");
+
+                var wrapper = widget.createElement('div', {'id': 'BashFR'});
+                BashFR.quote = widget.createElement('div', {'class': 'quote'}).inject(wrapper);
+                BashFR.quote.addEvent('click', widget.onRefresh);
+                BashFR.link = widget.createElement('div', {'class': 'link'}).inject(wrapper);
+
+                widget.setBody('');
+                wrapper.inject(widget.body);
+                widget.body.style.padding = '0px';
+
+                widget.onRefresh();
+            }
+
+            widget.onRefresh = function() {
+                var rand = parseInt(Math.random() * BashFR.quotes.length)
+                var quote = BashFR.quotes[rand].split('-- ');
+
+                BashFR.quote.innerHTML = quote[0].replace(/\n/g, "<br\/>");
+                BashFR.link.innerHTML = '<a href="' + quote[1] + '">' + quote[1] + '</a>';
+            }
+
+            widget.onLoad = function() {
+                UWA.Data.request('http://danstonchat.com/fortunes', {
+                    onComplete: BashFR.init
+                });
+            }
+
+        </script>
+    </head>
+    <body>
+        <p>Loading...</p>
+    </body>
+</html>
+
